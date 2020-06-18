@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
@@ -18,33 +20,37 @@ const App = () => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
       setUser(user)
+      blogService.setToken(user.token)
+
     }
   }, [])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )  
-  }, [])
+  }, [blogs])
 
 
   const handleBlogSubmit = async(event) => {
-    console.log(event.target)
     event.preventDefault()
     const newBlog = {title, author, url}
-
         try {
     const createdBlog = await blogService.createBlog(newBlog)
-    console.log(createdBlog);
+    setMessageType('success')
+    setMessage(`Added new blog: ${createdBlog.title} by ${createdBlog.author}`)
+    setTimeout(() => {
+      setMessage('')
+    }, 5000);
      
     setTitle('')
     setAuthor('')
     setUrl('')
     
   } catch (ex) {
-    setErrorMessage('Something went wrong')
+    setMessageType('error')
+    setMessage('Something went with adding a new blog')
     console.log(ex);
-    
   }
   }
  
@@ -63,9 +69,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (ex) {
-      setErrorMessage('wrong credentials')
+      setMessage('Wrong username or password')
+      setMessageType('error')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
       }, 5000)
     }
     console.log('Logging in with', username, password)
@@ -118,7 +125,8 @@ const App = () => {
       <p>
       <span>Hi {user.name}!</span><button onClick={() => logOut()}>Logout</button>
       </p>
-     
+
+      <Notification message={message} messageType={messageType}/>
      <h3>Submit a new blog</h3>
    <form onSubmit={handleBlogSubmit}>
     <div>
