@@ -50,7 +50,6 @@ const App = () => {
   } catch (ex) {
     setMessageType('error')
     setMessage('Something went with adding a new blog')
-    console.log(ex);
   }
   }
  
@@ -69,13 +68,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (ex) {
-      setMessage('Wrong username or password')
       setMessageType('error')
+      setMessage('Wrong username or password')
       setTimeout(() => {
         setMessage(null)
       }, 5000)
     }
-    console.log('Logging in with', username, password)
   }
 
   const logOut = async () => {
@@ -88,6 +86,7 @@ const App = () => {
       <form onSubmit={handleLogin}>
         <div>
         <h2>Log in to blog listing app</h2>
+          <Notification message={message} messageType={messageType}/>
           username
             <input
             type="text"
