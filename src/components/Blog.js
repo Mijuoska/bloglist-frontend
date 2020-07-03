@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import blogService from '../services/blogs'
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user, removeBlog }) => {
+console.log(blog)
+console.log(user)
 
 const [visible, toggleVisibility] = useState(false)
 const [renderedBlog, renderBlog] = useState(blog)
@@ -14,6 +16,8 @@ const likeBlog = async(event) => {
   renderBlog(updatedBlog)
 }
 
+
+
 return (
 
   <div style={{...border, ...margin}}>
@@ -25,6 +29,7 @@ return (
   <p>
    Likes: {renderedBlog.likes} <button id={renderedBlog.id} onClick={likeBlog}>Like</button>
    </p>
+   <button style={{ display: user.id === blog.user.id ? '' : 'none' }} id={renderedBlog.id} onClick={removeBlog}>Delete</button>
     </div>
     </div>
 )

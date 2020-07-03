@@ -63,6 +63,23 @@ const createBlog = async (blogObject) => {
 }
 }
 
+const removeBlog = async (event) => {
+  const result = window.confirm('Are you sure you want to delete this blog?')
+  if (result) {
+    const ID = event.target.id
+    const deletedBlog = await blogService.deleteBlog(ID)
+    const remainingBlogs = blogs.filter(blog => blog.id !== ID)
+    setBlogs(remainingBlogs)
+    setMessageType('success')
+    setMessage('Deleted blog')
+    setTimeout(() => {
+      setMessage('')
+    }, 5000);
+  }
+
+}
+
+
 
 
   const handleLogin = async (event) => {
@@ -115,7 +132,7 @@ const createBlog = async (blogObject) => {
        <div>
        <h3>List of blogs</h3>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog}/>)}
+        <Blog key={blog.id} blog={blog} user={user} removeBlog={removeBlog}/>)}
       </div>
     </div>
   )
