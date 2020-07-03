@@ -28,17 +28,28 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )  
-  }, [blogs.length])
+ blogService.getAll().then(blogs => {
+   const sorted = blogs.sort((a, b) => {
+     if (a.likes > b.likes) {
+       return -1
+     } else if (a.likes < b.likes) {
+       return 1
+     } else {
+       return 0
+     }
+   })
+   setBlogs(sorted)
+ })
+ 
+}, [blogs.length])
+      
 
+        
 
 
 const createBlog = async (blogObject) => {
   try {
   const createdBlog = await blogService.createBlog(blogObject)
-  console.log(createdBlog)
   const blogsCopy = blogs.filter(blog => blog.id !== createdBlog.id);
   setBlogs(blogsCopy.concat(createdBlog))
   setMessageType('success')
