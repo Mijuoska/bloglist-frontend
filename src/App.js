@@ -17,8 +17,6 @@ const App = () => {
   const [formVisible, setFormVisible] = useState(false)
 
 
-
-
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedInUser')
     if (loggedUser) {
@@ -40,6 +38,7 @@ const App = () => {
 const createBlog = async (blogObject) => {
   try {
   const createdBlog = await blogService.createBlog(blogObject)
+  console.log(createdBlog)
   const blogsCopy = blogs.filter(blog => blog.id !== createdBlog.id);
   setBlogs(blogsCopy.concat(createdBlog))
   setMessageType('success')
@@ -105,7 +104,7 @@ const createBlog = async (blogObject) => {
        <div>
        <h3>List of blogs</h3>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} buttonLabel='show' cancel='hide'/>)}
+        <Blog key={blog.id} blog={blog}/>)}
       </div>
     </div>
   )
