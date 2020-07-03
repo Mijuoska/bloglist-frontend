@@ -63,10 +63,8 @@ const App = () => {
   }
 
   const handleBlogSubmit = async(event) => {
-    console.log(event)
     event.preventDefault()
     const newBlog = {title, author, url}
-    console.log(newBlog)
         try {
     const createdBlog = await blogService.createBlog(newBlog)
     setMessageType('success')
@@ -78,6 +76,7 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setFormVisible(false)
     
   } catch (ex) {
     setMessageType('error')
