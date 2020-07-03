@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -15,13 +16,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [formVisible, setFormVisible] = useState(false)
 
-
-  const hideWhenVisible = {
-    display: formVisible ? 'none' : ''
-  }
-  const showWhenVisible = {
-    display: formVisible ? '' : 'none'
-  }
 
 
 
@@ -105,20 +99,13 @@ const createBlog = async (blogObject) => {
       </p>
 
       <Notification message={message} messageType={messageType}/>
-      <div style={hideWhenVisible}>
-<button onClick={() => setFormVisible(true)}>New Blog</button>
-</div>
-<div style={showWhenVisible}>
+      <Togglable buttonLabel='new Blog' cancel='Cancel'>
      <BlogForm createBlog={createBlog} setFormVisible={setFormVisible} formVisible={formVisible}/>
-     </div>
-     <div>  
-    <button onClick={() => setFormVisible(false)}>cancel</button>
-    </div>
+     </Togglable>
        <div>
        <h3>List of blogs</h3>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+        <Blog key={blog.id} blog={blog} buttonLabel='show' cancel='hide'/>)}
       </div>
     </div>
   )
