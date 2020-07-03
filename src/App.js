@@ -12,11 +12,17 @@ const App = () => {
   const [messageType, setMessageType] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [formVisible, setFormVisible] = useState(false)
+
+
+  const hideWhenVisible = {
+    display: formVisible ? 'none' : ''
+  }
+  const showWhenVisible = {
+    display: formVisible ? '' : 'none'
+  }
+
 
 
   useEffect(() => {
@@ -33,57 +39,25 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )  
-  }, [blogs])
+  }, [blogs.length])
 
 
-  const blogForm = () => {
-    const hideWhenVisible = { display: formVisible ? 'none' : '' }
-    const showWhenVisible = { display: formVisible ? '' : 'none' }
 
-    return (
-    <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setFormVisible(true)}>New Blog</button>
-        </div>
-        <div style={showWhenVisible}>
-          <BlogForm
-            title={title}
-            author={author}
-            url={url}
-            setTitle = {setTitle}
-            setAuthor = {setAuthor}
-            setUrl = {setUrl}
-            handleSubmit={handleBlogSubmit}
-          />
-          <button onClick={() => setFormVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-
-  }
-
-  const handleBlogSubmit = async(event) => {
-    event.preventDefault()
-    const newBlog = {title, author, url}
-        try {
-    const createdBlog = await blogService.createBlog(newBlog)
-    setMessageType('success')
-    setMessage(`Added new blog: ${createdBlog.title} by ${createdBlog.author}`)
-    setTimeout(() => {
-      setMessage('')
-    }, 5000);
-     
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    setFormVisible(false)
-    
+const createBlog = async (blogObject) => {
+  try {
+  const createdBlog = await blogService.createBlog(blogObject)
+  const blogsCopy = blogs.filter(blog => blog.id !== createdBlog.id);
+  setBlogs(blogsCopy.concat(createdBlog))
+  setMessageType('success')
+  setMessage(`Added new blog: ${createdBlog.title} by ${createdBlog.author}`)
+  setTimeout(() => {
+    setMessage('')
+  }, 5000);
   } catch (ex) {
     setMessageType('error')
     setMessage('Something went wrong with adding a new blog')
-  }
-  }
- 
+}
+}
 
 
 
@@ -131,7 +105,15 @@ const App = () => {
       </p>
 
       <Notification message={message} messageType={messageType}/>
-     {blogForm()}
+      <div style={hideWhenVisible}>
+<button onClick={() => setFormVisible(true)}>New Blog</button>
+</div>
+<div style={showWhenVisible}>
+     <BlogForm createBlog={createBlog} setFormVisible={setFormVisible} formVisible={formVisible}/>
+     </div>
+     <div>  
+    <button onClick={() => setFormVisible(false)}>cancel</button>
+    </div>
        <div>
        <h3>List of blogs</h3>
       {blogs.map(blog =>
@@ -141,5 +123,4 @@ const App = () => {
     </div>
   )
 }
-
-export default App
+  export default App
