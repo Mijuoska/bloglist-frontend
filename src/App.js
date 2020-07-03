@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -15,6 +16,8 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
+  const [formVisible, setFormVisible] = useState(false)
+
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedInUser')
@@ -33,9 +36,37 @@ const App = () => {
   }, [blogs])
 
 
+  const blogForm = () => {
+    const hideWhenVisible = { display: formVisible ? 'none' : '' }
+    const showWhenVisible = { display: formVisible ? '' : 'none' }
+
+    return (
+    <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setFormVisible(true)}>New Blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <BlogForm
+            title={title}
+            author={author}
+            url={url}
+            setTitle = {setTitle}
+            setAuthor = {setAuthor}
+            setUrl = {setUrl}
+            handleSubmit={handleBlogSubmit}
+          />
+          <button onClick={() => setFormVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+
+  }
+
   const handleBlogSubmit = async(event) => {
+    console.log(event)
     event.preventDefault()
     const newBlog = {title, author, url}
+    console.log(newBlog)
         try {
     const createdBlog = await blogService.createBlog(newBlog)
     setMessageType('success')
@@ -50,7 +81,7 @@ const App = () => {
     
   } catch (ex) {
     setMessageType('error')
-    setMessage('Something went with adding a new blog')
+    setMessage('Something went wrong with adding a new blog')
   }
   }
  
@@ -83,19 +114,13 @@ const App = () => {
   }
   
 
-   
-
-
-      
-  
-
 
  if (user === null) {
    return (
      <div>
     <h2>Log in to blog listing app</h2>
     <Notification message={message} messageType={messageType}/>
-    <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
+    <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword}/>
     </div>
    )
  }
@@ -107,19 +132,7 @@ const App = () => {
       </p>
 
       <Notification message={message} messageType={messageType}/>
-     <h3>Submit a new blog</h3>
-   <form onSubmit={handleBlogSubmit}>
-    <div>
-     Title: <input type="text" name="Title" value={title} onChange={({ target }) => setTitle(target.value)}/>
-     </div>
-     <div>
-     Author: <input type="text" name="Author" value={author}  onChange={({ target }) => setAuthor(target.value)} />
-     </div>
-     <div>
-     Url <input type="text" name="Url" value={url} onChange={({ target }) => setUrl(target.value)}/>
-     </div>
-    <button type="submit">Create</button>
-    </form>     
+     {blogForm()}
        <div>
        <h3>List of blogs</h3>
       {blogs.map(blog =>
