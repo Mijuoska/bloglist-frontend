@@ -14,9 +14,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [formVisible, setFormVisible] = useState(false)
 
- const blogFormRef = useRef()
+  const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedInUser')
@@ -29,63 +28,63 @@ const App = () => {
   }, [])
 
   useEffect(() => {
- blogService.getAll().then(blogs => {
-   const sorted = blogs.sort((a, b) => {
-     if (a.likes > b.likes) {
-       return -1
-     } else if (a.likes < b.likes) {
-       return 1
-     } else {
-       return 0
-     }
-   })
-   setBlogs(sorted)
- })
- 
-}, [blogs.length])
-      
+    blogService.getAll().then(blogs => {
+      const sorted = blogs.sort((a, b) => {
+        if (a.likes > b.likes) {
+          return -1
+        } else if (a.likes < b.likes) {
+          return 1
+        } else {
+          return 0
+        }
+      })
+      setBlogs(sorted)
+    })
 
-        
+  }, [blogs.length])
 
 
-const createBlog = async (blogObject) => {
-  blogFormRef.current.toggleVisibility()
-  try {
-  const createdBlog = await blogService.createBlog(blogObject)
-  const blogsCopy = blogs.filter(blog => blog.id !== createdBlog.id);
-  setBlogs(blogsCopy.concat(createdBlog))
-  setMessageType('success')
-  setMessage(`Added new blog: ${createdBlog.title} by ${createdBlog.author}`)
-  setTimeout(() => {
-    setMessage('')
-  }, 5000);
-  } catch (ex) {
-    setMessageType('error')
-    setMessage('Something went wrong with adding a new blog')
-}
-}
 
-const removeBlog = async (event) => {
-  const result = window.confirm('Are you sure you want to delete this blog?')
-  if (result) {
-    const ID = event.target.id
-    const deletedBlog = await blogService.deleteBlog(ID)
-    const remainingBlogs = blogs.filter(blog => blog.id !== ID)
-    setBlogs(remainingBlogs)
-    setMessageType('success')
-    setMessage('Deleted blog')
-    setTimeout(() => {
-      setMessage('')
-    }, 5000);
+
+
+  const createBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
+    try {
+      const createdBlog = await blogService.createBlog(blogObject)
+      const blogsCopy = blogs.filter(blog => blog.id !== createdBlog.id)
+      setBlogs(blogsCopy.concat(createdBlog))
+      setMessageType('success')
+      setMessage(`Added new blog: ${createdBlog.title} by ${createdBlog.author}`)
+      setTimeout(() => {
+        setMessage('')
+      }, 5000)
+    } catch (ex) {
+      setMessageType('error')
+      setMessage('Something went wrong with adding a new blog')
+    }
   }
 
-}
+  const removeBlog = async (event) => {
+    const result = window.confirm('Are you sure you want to delete this blog?')
+    if (result) {
+      const ID = event.target.id
+      const deletedBlog = await blogService.deleteBlog(ID)
+      const remainingBlogs = blogs.filter(blog => blog.id !== ID)
+      setBlogs(remainingBlogs)
+      setMessageType('success')
+      setMessage('Deleted blog')
+      setTimeout(() => {
+        setMessage('')
+      }, 5000)
+    }
+
+  }
 
 
 
 
   const handleLogin = async (event) => {
-    event.preventDefault()    
+    event.preventDefault()
     try {
       const user = await loginService.login({
         username, password,
@@ -105,38 +104,38 @@ const removeBlog = async (event) => {
   }
 
   const logOut = async () => {
-   setUser(null)
-   window.localStorage.removeItem('loggedInUser')
+    setUser(null)
+    window.localStorage.removeItem('loggedInUser')
   }
-  
 
 
- if (user === null) {
-   return (
-     <div>
-    <h2>Log in to blog listing app</h2>
-    <Notification message={message} messageType={messageType}/>
-    <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword}/>
-    </div>
-   )
- }
+
+  if (user === null) {
+    return (
+      <div>
+        <h2>Log in to blog listing app</h2>
+        <Notification message={message} messageType={messageType}/>
+        <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword}/>
+      </div>
+    )
+  }
   return (
     <div>
       <h2>Blog listing</h2>
       <p>
-      <span>Hi {user.name}!</span><button onClick={() => logOut()}>Logout</button>
+        <span>Hi {user.name}!</span><button onClick={() => logOut()}>Logout</button>
       </p>
 
       <Notification message={message} messageType={messageType}/>
       <Togglable buttonLabel='new Blog' ref={blogFormRef}>
-     <BlogForm createBlog={createBlog}/>
-     </Togglable>
-       <div>
-       <h3>List of blogs</h3>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} removeBlog={removeBlog}/>)}
+        <BlogForm createBlog={createBlog}/>
+      </Togglable>
+      <div>
+        <h3>List of blogs</h3>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} user={user} removeBlog={removeBlog}/>)}
       </div>
     </div>
   )
 }
-  export default App
+export default App
