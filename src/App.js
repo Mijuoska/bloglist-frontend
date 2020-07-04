@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
@@ -16,6 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [formVisible, setFormVisible] = useState(false)
 
+ const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedInUser')
@@ -48,6 +49,7 @@ const App = () => {
 
 
 const createBlog = async (blogObject) => {
+  blogFormRef.current.toggleVisibility()
   try {
   const createdBlog = await blogService.createBlog(blogObject)
   const blogsCopy = blogs.filter(blog => blog.id !== createdBlog.id);
@@ -126,8 +128,8 @@ const removeBlog = async (event) => {
       </p>
 
       <Notification message={message} messageType={messageType}/>
-      <Togglable buttonLabel='new Blog' cancel='Cancel'>
-     <BlogForm createBlog={createBlog} setFormVisible={setFormVisible} formVisible={formVisible}/>
+      <Togglable buttonLabel='new Blog' ref={blogFormRef}>
+     <BlogForm createBlog={createBlog}/>
      </Togglable>
        <div>
        <h3>List of blogs</h3>
