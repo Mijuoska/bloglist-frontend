@@ -8,6 +8,7 @@ import Togglable from './Togglable'
 
 
 describe('Blog listing', () => {
+let component
 
  const blog = {
      id: 1,
@@ -26,44 +27,41 @@ describe('Blog listing', () => {
      id: 1
  }
 
-
-
-
-test('Title and author are displayed', () => {
-   const component = render(
+beforeEach(()=> {
+  component = render(
         <Blog blog={blog} user={user}/>
            )
-
-    expect(component.container).toHaveTextContent(
-        'My Test Blog by Miika Kallasoja'
-    )
-
-     expect(component.container).toHaveTextContent(
-         'URL'
-     )
 })
 
 
-// test('URL and likes are displayed on click', () => {
-//       const component = render(
-//         <Blog blog={blog} user={user}/>
-//            )
+test('Title and author are displayed', () => {
+    expect(component.container).toHaveTextContent(
+        'My Test Blog by Miika Kallasoja'
+    )
+})
+
+test('At start URL and likes are not displayed', () => {
+    const div = component.container.querySelector('.togglableContent')
+    expect(div).toHaveStyle('display: none')
+    
+
+})
+
+test('URL and likes are displayed on click', () => {
+const div = component.container.querySelector('.togglableContent')
+
+const button = component.getByText('Show');
+fireEvent.click(button);
+
+expect(div).not.toHaveStyle(
+    'display: none'
+)
 
 
-// component.debug()
+})
 
-// // const button = component.getByText('Show');
-// // fireEvent.click(button);
 
-// expect(component.container).toHaveTextContent(
-//     'URL: test.com'
-// )
 
-// expect(component.container).toHaveTextContent(
-//     'Likes: 1'
-// )
-
-// })
 
 })
 
