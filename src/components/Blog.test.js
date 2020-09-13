@@ -4,8 +4,7 @@ import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
-import Togglable from './Togglable'
-
+import BlogForm from './BlogForm'
 
 describe('Blog listing', () => {
 let component
@@ -57,7 +56,7 @@ test('URL and likes are displayed on click', () => {
 const div = component.container.querySelector('.togglableContent')
 
 const button = component.getByText('Show');
-fireEvent.click(button);
+fireEvent.click(button)
 
 expect(div).not.toHaveStyle(
     'display: none'
@@ -72,10 +71,9 @@ test('Clicking the Like button twice will call the event handler twice', () => {
         <Blog blog={blog} user={user} likeBlog={mockHandler}/>
            )
 
-    const button = component.getByText('Like');
-    fireEvent.click(button);
-    fireEvent.click(button);
-
+    const button = component.getByText('Like')
+    fireEvent.click(button)
+    fireEvent.click(button)
 
 
     expect(mockHandler.mock.calls).toHaveLength(2)
@@ -83,6 +81,39 @@ test('Clicking the Like button twice will call the event handler twice', () => {
 
 })
 
+// Tee uuden blogin luomisesta huolehtivalle lomakkelle testi, 
+// joka varmistaa, että lomake kutsuu propseina saamaansa
+//  takaisinkutsufunktiota oikeilla tiedoilla siinä vaiheessa kun blogi luodaan.
+test('Blog form is submitted with correct info', () => {
+    const createBlog = jest.fn()
+    const component =  render(<BlogForm createBlog={createBlog}/>)
+    const inputTitle = component.container.querySelector('#title')
+    const inputAuthor = component.container.querySelector('#author')
+    const inputURL = component.container.querySelector('#url')
+    const form = component.container.querySelector('form')
+
+    fireEvent.change(inputTitle, 
+        {target: {value: "This is a test created by Jest"}
+    })
+      fireEvent.change(inputAuthor, {
+          target: { value: "Jest"}
+      })
+    
+        fireEvent.change(inputURL, 
+        {target: {value: "jest.com"}
+        })
+
+    fireEvent.submit(form)
+    
+    expect(createBlog.mock.calls).toHaveLength(1);
+    expect(createBlog.mock.calls[0][0].title).toBe("This is a test created by Jest")
+    expect(createBlog.mock.calls[0][0].author).toBe("Jest")
+    expect(createBlog.mock.calls[0][0].url).toBe("jest.com")
+
+
+
+
+})
 
 })
 
