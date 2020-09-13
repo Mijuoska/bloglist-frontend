@@ -27,20 +27,23 @@ let component
      id: 1
  }
 
-beforeEach(()=> {
-  component = render(
-        <Blog blog={blog} user={user}/>
-           )
-})
 
 
 test('Title and author are displayed', () => {
+ const component = render(
+        <Blog blog={blog} user={user}/>
+           )
+
     expect(component.container).toHaveTextContent(
         'My Test Blog by Miika Kallasoja'
     )
 })
 
 test('At start URL and likes are not displayed', () => {
+ const component = render(
+        <Blog blog={blog} user={user}/>
+           )
+
     const div = component.container.querySelector('.togglableContent')
     expect(div).toHaveStyle('display: none')
     
@@ -48,6 +51,9 @@ test('At start URL and likes are not displayed', () => {
 })
 
 test('URL and likes are displayed on click', () => {
+     const component = render(
+        <Blog blog={blog} user={user}/>
+           )
 const div = component.container.querySelector('.togglableContent')
 
 const button = component.getByText('Show');
@@ -57,10 +63,25 @@ expect(div).not.toHaveStyle(
     'display: none'
 )
 
-
 })
 
+test('Clicking the Like button twice will call the event handler twice', () => {
+    const mockHandler = jest.fn()
 
+    const component = render(
+        <Blog blog={blog} user={user} likeBlog={mockHandler}/>
+           )
+
+    const button = component.getByText('Like');
+    fireEvent.click(button);
+    fireEvent.click(button);
+
+
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+
+
+})
 
 
 })
