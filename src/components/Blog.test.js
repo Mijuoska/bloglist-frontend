@@ -7,7 +7,6 @@ import Blog from './Blog'
 import BlogForm from './BlogForm'
 
 describe('Blog listing', () => {
-let component
 
  const blog = {
      id: 1,
@@ -81,9 +80,6 @@ test('Clicking the Like button twice will call the event handler twice', () => {
 
 })
 
-// Tee uuden blogin luomisesta huolehtivalle lomakkelle testi, 
-// joka varmistaa, että lomake kutsuu propseina saamaansa
-//  takaisinkutsufunktiota oikeilla tiedoilla siinä vaiheessa kun blogi luodaan.
 test('Blog form is submitted with correct info', () => {
     const createBlog = jest.fn()
     const component =  render(<BlogForm createBlog={createBlog}/>)
