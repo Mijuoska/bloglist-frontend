@@ -39,3 +39,31 @@ describe('Login', function () {
     })
 
 })
+
+describe('When logged in', function () {
+            beforeEach(function () {
+                cy.visit('http://localhost:3000')
+                cy.get('#username').type('mijuoska')
+                cy.get('#password').type('123abc')
+                cy.get('#login-button').click()
+                 cy.contains('Hi Miika Kallasoja!');
+                 cy.contains('Blog listing')
+            })
+            it('A blog can be added', function () {
+                cy.visit('http://localhost:3000')
+                cy.contains('new Blog').click()
+                cy.get('#title').type('How to do E2E testing')
+                cy.get('#author').type('Cypress')
+                cy.get('#url').type('testing.com')
+                cy.contains('Create').click()
+                cy.get('.success')
+                cy.contains('How to do E2E testing by Cypress')
+            })
+            it('A blog can be liked', function () {
+                cy.contains('Show').click()
+                cy.contains('Likes')
+                cy.contains('Like').click()
+                cy.contains('Likes: 1')
+            })
+
+})
