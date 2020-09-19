@@ -80,7 +80,15 @@ const App = () => {
 
   }
 
+  const likeBlog = async (id) => {
+    const blog = blogs.find(blog => {
+      return blog.id === id
+    })
+    const likedBlog = { ...blog, likes: 1 }
+    const updatedBlog = await blogService.updateBlog(id, likedBlog)
+    setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
 
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -132,9 +140,9 @@ const App = () => {
       <div>
         <h3>List of blogs</h3>
         <div className="blog-list">
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} removeBlog={removeBlog}/>)}
-          </div>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} user={user} removeBlog={removeBlog} likeBlog={() => likeBlog(blog.id)}/>)}
+        </div>
       </div>
     </div>
   )

@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import blogService from '../services/blogs'
+import React from 'react'
 import Togglable from './Togglable'
 
 const Blog = ({ blog, user, removeBlog, likeBlog }) => {
