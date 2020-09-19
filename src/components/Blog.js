@@ -2,32 +2,23 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import Togglable from './Togglable'
 
-const Blog = ({ blog, user, removeBlog }) => {
+const Blog = ({ blog, user, removeBlog, likeBlog }) => {
 
-  const [renderedBlog, renderBlog] = useState(blog)
-
- const likeBlog = async (event, blog) => {
-   const updatedBlog = await blogService.updateBlog(event.target.id, {
-     ...blog,
-     likes: 1
-   })
-   renderBlog(updatedBlog)
- }
 
 
 
   return (
 
     <div className='blog'>
-      {renderedBlog.title} by {renderedBlog.author}
+      {blog.title} by {blog.author}
       <Togglable buttonLabel='Show'>
         <p>
-   URL: {renderedBlog.url}
+   URL: {blog.url}
         </p>
         <p>
-   Likes: {renderedBlog.likes} <button id={renderedBlog.id} onClick={likeBlog}>Like</button>
+   Likes: {blog.likes} <button id={blog.id} onClick={likeBlog}>Like</button>
         </p>
-        <button style={{ display: user.id === blog.user.id ? '' : 'none' }} id={renderedBlog.id} onClick={removeBlog}>Delete</button>
+        <button style={{ display: user.id === blog.user.id ? '' : 'none' }} id={blog.id} onClick={removeBlog}>Delete</button>
       </Togglable>
     </div>
   )
