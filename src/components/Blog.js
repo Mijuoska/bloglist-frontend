@@ -3,9 +3,6 @@ import Togglable from './Togglable'
 
 const Blog = ({ blog, user, removeBlog, likeBlog }) => {
 
-
-
-
   return (
 
     <div className='blog'>
